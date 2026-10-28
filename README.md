@@ -1,113 +1,176 @@
 # TVDebloat
 
-TVDebloat is a clean-room, office-focused Android TV / Google TV debloating toolkit.
+TVDebloat is a clean-room Android TV / Google TV debloating toolkit built around one operating principle:
 
-It is being rebuilt from scratch by studying the behavior, safety lessons, and device edge cases of mature Android TV cleanup projects, then implementing those capabilities in a smaller TVDebloat-owned architecture.
+> **Learn one TV carefully, save what we learned as a profile, then reuse that validated profile across matching TVs.**
 
-**This repository contains debloat/provisioning only.** A custom launcher is intentionally out of scope for this phase.
+The current phase covers **debloat/provisioning only**. Launcher replacement, themes, and unrelated TV customization are intentionally out of scope.
 
-## Start here
+## Operator start
 
-## Use with ChatGPT/Codex or Claude
+If you are going to use TVDebloat on a real TV, start with:
 
-TVDebloat ships with repo-local skills that can walk you through connecting to a TV, finding or building its profile, reviewing package decisions, piloting the debloat, and rolling the validated profile out to matching TVs.
+- **[RUNBOOK.md](RUNBOOK.md)** — zero-to-first-TV operator onboarding
+- **[SKILLS.md](SKILLS.md)** — ChatGPT/Codex and Claude skill installation/use
 
-**[SKILLS.md](SKILLS.md)** covers:
+The runbook assumes the operator may not know Git, ADB, TVDebloat, profile authoring, or the skill workflow yet.
 
-- how the repo-local skills are discovered;
-- optional global/personal installation;
-- Claude `/tvdebloat` usage;
-- ChatGPT/Codex prompt examples;
-- new-TV, existing-profile, pilot, fleet, and recovery prompts.
+## Primary pilot
 
-Example ChatGPT/Codex prompt:
+The first real target for this project is a **Sony BRAVIA**.
 
-```text
-Use the tvdebloat skill. I have a new ASUS TV at 192.168.1.50.
-Help me connect, run preflight, see whether a matching profile exists,
-and if not build a candidate debloat profile with me.
-Do not apply anything until I approve the package diff.
-```
+Sony support is intentionally profile-driven rather than based on one universal BRAVIA debloat list. BRAVIA models span multiple Android/Google TV generations, boards, firmware families, input stacks, and vendor packages.
 
-Example profile-maintenance prompt:
+The operator workflow is therefore:
 
 ```text
-Use the tvdebloat skill.
-
-Compare the live TV at 192.168.1.50 against:
-profiles/sony/<model>/profile.toml
-
-Show me a proposed diff for:
-- packages to add to disable,
-- packages to remove from disable or move to keep,
-- packages that should stay in review.
-
-Explain every proposed change and do not edit the profile until I approve the diff.
+connect
+  ↓
+preflight
+  ↓
+probe exact TV
+  ↓
+find matching profile
+  ↓
+maintain existing profile
+or
+build candidate profile
+  ↓
+gather evidence
+  ↓
+preview
+  ↓
+operator approval
+  ↓
+pilot apply
+  ↓
+physical validation
+  ↓
+reboot + drift
+  ↓
+validated profile
+  ↓
+matching fleet TVs
 ```
 
-Example Claude Code command:
+## Profile model
+
+Real device knowledge lives under:
 
 ```text
-/tvdebloat new 192.168.1.50
+profiles/<vendor>/<model>/
+├── profile.toml
+└── NOTES.md
 ```
 
+A profile separates package decisions into:
 
-For a real TV, use **[RUNBOOK.md](RUNBOOK.md)**.
+```toml
+[packages]
 
-Typical workflow:
+disable = [
+  # packages validated for debloat
+]
 
-```bash
-python -m pip install -e .
+keep = [
+  # required/protected packages
+]
 
-tvdebloat --host 192.168.1.50 preflight profiles/<device>/profile.toml
-
-tvdebloat --host 192.168.1.50 probe
-
-tvdebloat --host 192.168.1.50 audit
-
-tvdebloat --host 192.168.1.50 provision profiles/<device>/profile.toml
-
-# review the preview, then explicitly apply:
-tvdebloat --host 192.168.1.50 provision profiles/<device>/profile.toml --apply
-
-tvdebloat --host 192.168.1.50 verify
-
-tvdebloat --host 192.168.1.50 drift profiles/<device>/profile.toml
+review = [
+  # packages that still need evidence or pilot testing
+]
 ```
 
-Restore TVDebloat changes:
+Profiles have lifecycle states:
 
-```bash
-tvdebloat --host 192.168.1.50 restore profiles/<device>/profile.toml
-```
+- `candidate` — still being researched or piloted
+- `validated` — passed pilot testing and reboot validation
+- `deprecated` — known obsolete/unsafe for current firmware
+
+A meaningful change to a validated profile should be treated as requiring pilot revalidation before broad rollout.
 
 ## Design goals
 
-- disable packages; do not delete system software
-- write recovery state before mutation
-- fail closed when the TV cannot be understood safely
-- protect Android core and TV middleware
-- protect the only usable Home application
-- protect saved Wi-Fi when SetupWraith owns it
-- protect HDMI/AV/tuner service packages
-- protect Settings/input handlers unless explicitly reviewed
-- match profiles against the live device before applying them
-- verify after changes and after reboot
-- keep runtime data out of the repository
-- generate structured, redaction-ready bug reports
+TVDebloat is intentionally conservative:
+
+- disable packages rather than deleting system software;
+- gather live-device evidence before package decisions;
+- fail closed when device identity or required TV behavior is unclear;
+- protect Android core and TV middleware;
+- protect the only usable Home application;
+- protect Wi-Fi/setup ownership;
+- protect HDMI/input/tuner services;
+- protect Settings, remote, Bluetooth, and required handlers;
+- write recovery state before mutation;
+- show the proposed diff before mutation;
+- require operator approval;
+- require physical validation after mutation;
+- record device-specific findings in the profile/notes;
+- reuse validated profiles only on compatible live devices.
+
+The goal is not to produce the largest possible debloat list.
+
+The goal is to produce a **known-good, repeatable profile**.
+
+## Skill architecture
+
+TVDebloat ships with lean repo-local skills:
+
+```text
+.agents/skills/tvdebloat/   ChatGPT / Codex
+.claude/skills/tvdebloat/   Claude Code
+```
+
+The entry skills contain routing and safety rules only.
+
+Detailed workflows are loaded selectively from references such as:
+
+```text
+references/
+├── evidence-gathering.md
+├── package-classification.md
+├── profile-authoring.md
+├── profile-maintenance.md
+├── validation-and-fleet.md
+└── bug-workflow.md
+```
+
+This keeps normal skill activation small while still giving the operator detailed guidance when needed.
 
 ## Repository layout
 
 ```text
 TVDebloat/
-├── tvdebloat/                  clean-room implementation
-├── tests/                      TVDebloat-owned regression tests
-├── profiles/                   normalized device profiles
-├── docs/                       operator and developer references
+├── tvdebloat/                  implementation
+├── tests/                      generic regression tests
+├── profiles/                   real TV profiles + template
+├── docs/                       profile/developer documentation
 ├── .agents/skills/tvdebloat/   ChatGPT / Codex skill
 ├── .claude/skills/tvdebloat/   Claude Code skill
-├── .github/workflows/          TVDebloat CI
-├── RUNBOOK.md
-├── ARCHITECTURE.md
+├── .github/workflows/          CI
+├── README.md                   project/developer overview
+├── RUNBOOK.md                  operator onboarding
+├── SKILLS.md                   skill installation + prompt recipes
+├── ARCHITECTURE.md             architecture/design
 └── pyproject.toml
 ```
+
+## Development rules
+
+When adding support for a TV:
+
+1. gather evidence from the live device;
+2. use existing device knowledge only as supporting evidence;
+3. keep uncertain packages in `review`;
+4. add or edit the smallest relevant profile;
+5. record important findings in `NOTES.md`;
+6. validate changes on a pilot;
+7. add regression coverage when a behavior can be tested automatically.
+
+Generic tests should use synthetic manufacturers/models. Real device names belong in real profiles and device documentation.
+
+## Reference policy
+
+External projects may be studied for behavior, safety lessons, and compatibility evidence, but TVDebloat operates from its own code, profiles, tests, and documentation.
+
+Normal operator workflows should not depend on following another project's PR, issue, script, or website.
