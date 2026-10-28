@@ -48,8 +48,12 @@ def preview(client: Client, profile_path: str | Path) -> dict:
     }
 
 
-def apply(client: Client, profile_path: str | Path) -> dict:
+def apply(client: Client, profile_path: str | Path, allow_candidate: bool = False) -> dict:
     profile = load_profile(profile_path)
+    if profile.status != "validated" and not allow_candidate:
+        raise ApplyError(
+            "profile is not validated; use the guided pilot workflow for a first-device test"
+        )
     plan = preview(client, profile.path)
     if not plan["ready"]:
         raise ApplyError("live TV does not match the selected profile")
