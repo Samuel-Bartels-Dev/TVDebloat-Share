@@ -128,6 +128,94 @@ Then invoke:
 
 ## Prompt recipes
 
+## Example: edit an existing debloat list
+
+### ChatGPT / Codex prompt
+
+```text
+Use the tvdebloat skill.
+
+I have this TV:
+- IP: 192.168.1.50
+- profile: profiles/sony/<model>/profile.toml
+
+Compare the live TV against the existing profile.
+
+I want you to help me maintain the debloat list:
+- show packages that are in the profile but no longer installed,
+- show packages that are newly installed on the TV,
+- show packages in disable that appear unsafe or required,
+- show packages in keep that may no longer be needed,
+- show likely telemetry/recommendation/vendor-content packages that should be reviewed.
+
+Do not change the profile yet.
+
+First give me a proposed diff with three sections:
+1. add to disable
+2. remove from disable / move to keep
+3. keep in review / needs more evidence
+
+For every proposed package change, explain why.
+
+After I approve the diff, edit the profile with the smallest possible changes, update NOTES.md with the reason, and treat the edited profile as requiring pilot revalidation before fleet rollout.
+```
+
+### Add one package to review
+
+```text
+Use the tvdebloat skill.
+
+Open profiles/sony/<model>/profile.toml.
+
+Add com.vendor.example to packages.review, not packages.disable.
+
+Update NOTES.md with:
+- why we are reviewing it,
+- what evidence we still need,
+- what TV behavior must be tested before it could move to disable.
+
+Do not change anything else.
+```
+
+### Move a package from review to disable
+
+```text
+Use the tvdebloat skill.
+
+We tested com.vendor.example on the pilot TV and confirmed:
+- Home still works,
+- HDMI/input switching works,
+- remote works,
+- Settings works,
+- network works,
+- required office apps work,
+- reboot passed.
+
+Move com.vendor.example from packages.review to packages.disable in:
+profiles/sony/<model>/profile.toml
+
+Update NOTES.md with the validation evidence.
+
+Do not promote or mass-deploy the profile yet. Show me the diff first.
+```
+
+### Remove an unsafe package from disable
+
+```text
+Use the tvdebloat skill.
+
+In profiles/sony/<model>/profile.toml, com.vendor.inputservice is currently in packages.disable.
+
+The pilot showed that disabling it breaks HDMI input switching.
+
+Move it out of packages.disable and into packages.keep.
+
+Update NOTES.md with the failure and recovery result.
+
+Show me the exact diff before editing.
+```
+
+
 ### New TV model
 
 ```text
