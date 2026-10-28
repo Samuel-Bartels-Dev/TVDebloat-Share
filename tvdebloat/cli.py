@@ -9,6 +9,8 @@ from .adb import AdbError, Client, Target
 from .audit import inventory
 from .bugreport import write as write_bug
 from .drift import inspect as inspect_drift
+from .discovery import discover, write as write_discovery
+from .author import initialize as init_profile, promote as promote_profile
 from .engine import ApplyError, preview, restore
 from .facts import read as read_facts
 from .preflight import run as run_preflight
@@ -29,6 +31,9 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("probe")
     sub.add_parser("audit")
     sub.add_parser("privacy")
+    ds = sub.add_parser("discover"); ds.add_argument("--out", required=True)
+    pi = sub.add_parser("profile-init"); pi.add_argument("--name", required=True); pi.add_argument("--vendor", required=True); pi.add_argument("--model", required=True); pi.add_argument("--from", dest="from_file", required=True)
+    pp = sub.add_parser("profile-promote"); pp.add_argument("profile")
     pre = sub.add_parser("preflight"); pre.add_argument("profile", nargs="?")
     pv = sub.add_parser("preview"); pv.add_argument("profile")
     pr = sub.add_parser("provision"); pr.add_argument("profile"); pr.add_argument("--apply", action="store_true")
@@ -55,6 +60,16 @@ def main(argv=None) -> int:
             result = inventory(client)
         elif args.command == "privacy":
             result = privacy_audit(client)
+        elif args.command == "discover":
+            data = discover(client)
+            out = write_discovery(data, args.out)
+            result = {"discovery": str(out), "packages": len(data["packages"])}
+        elif args.command == "profile-init":
+            path = init_profile(args.from_file, args.vendor, args.model, args.name)
+            result = {"profile": str(path), "status": "candidate"}
+        elif args.command == "profile-promote":
+            path = promote_profile(args.profile)
+            result = {"profile": str(path), "status": "validated"}
         elif args.command == "preflight":
             result = run_preflight(client, args.profile)
         elif args.command == "preview":
