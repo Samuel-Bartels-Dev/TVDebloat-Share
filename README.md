@@ -8,6 +8,34 @@ It is being rebuilt from scratch by studying the behavior, safety lessons, and d
 
 ## Start here
 
+## Use with ChatGPT/Codex or Claude
+
+TVDebloat ships with repo-local skills that can walk you through connecting to a TV, finding or building its profile, reviewing package decisions, piloting the debloat, and rolling the validated profile out to matching TVs.
+
+**[SKILLS.md](SKILLS.md)** covers:
+
+- how the repo-local skills are discovered;
+- optional global/personal installation;
+- Claude `/tvdebloat` usage;
+- ChatGPT/Codex prompt examples;
+- new-TV, existing-profile, pilot, fleet, and recovery prompts.
+
+Example ChatGPT/Codex prompt:
+
+```text
+Use the tvdebloat skill. I have a new ASUS TV at 192.168.1.50.
+Help me connect, run preflight, see whether a matching profile exists,
+and if not build a candidate debloat profile with me.
+Do not apply anything until I approve the package diff.
+```
+
+Example Claude Code command:
+
+```text
+/tvdebloat new 192.168.1.50
+```
+
+
 For a real TV, use **[RUNBOOK.md](RUNBOOK.md)**.
 
 Typical workflow:
