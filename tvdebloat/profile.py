@@ -28,6 +28,7 @@ class Profile:
     match: Match
     disable: tuple[str, ...]
     keep: tuple[str, ...]
+    review: tuple[str, ...]
     notes: tuple[str, ...]
 
 
@@ -71,5 +72,6 @@ def load(path: str | Path) -> Profile:
         ),
         disable=_packages(packages.get("disable", []), "packages.disable"),
         keep=_packages(packages.get("keep", []), "packages.keep"),
+        review=_packages(packages.get("review", []), "packages.review"),
         notes=tuple(str(x) for x in data.get("notes", [])),
     )
