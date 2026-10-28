@@ -1,0 +1,21 @@
+name = "Example Candidate Profile"
+status = "candidate"
+
+[device]
+manufacturer = "Example"
+model = "ExampleTV"
+device = ""
+board = ""
+android = ""
+sdk = ""
+fingerprint_contains = ""
+
+[packages]
+disable = []
+
+keep = []
+
+notes = [
+  "Generated or copied as a starting point only.",
+  "Pilot validation and reboot test are required before promotion.",
+]
