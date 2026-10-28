@@ -545,6 +545,9 @@ When uncertain, use `review`.
 
 # 12. Build a candidate profile
 
+Before creating the real profile, you can look at `examples/sony-bravia-example/` to see a **synthetic, non-deployable** discovery/profile/NOTES example. Do not copy its fake package names into a real profile.
+
+
 If no profile exists:
 
 ```bash
