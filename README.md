@@ -4,7 +4,7 @@ TVDebloat is a clean-room Android TV / Google TV debloating toolkit built around
 
 > **Learn one TV carefully, save what we learned as a profile, then reuse that validated profile across matching TVs.**
 
-The current phase covers **debloat/provisioning only**. Launcher replacement, themes, and unrelated TV customization are intentionally out of scope.
+Android support covers debloat/provisioning. Independent **LG webOS discovery and launcher planning** is described in [docs/webos.md](docs/webos.md). The native webOS adapter is currently read-only on every firmware; launcher replacement and themes are not implemented.
 
 ## Operator start
 

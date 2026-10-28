@@ -1,6 +1,6 @@
 ---
 name: tvdebloat
-description: Guided TVDebloat workflow for safely maintaining or authoring reusable TV debloat profiles.
+description: Use when operating TVDebloat profiles on Android/Google TV or investigating LG webOS debloating and launcher changes.
 argument-hint: "[new|maintain|probe|discover|pilot|fleet|verify|restore] [TV-IP] [profile]"
 disable-model-invocation: true
 ---
@@ -8,6 +8,13 @@ disable-model-invocation: true
 # TVDebloat operator
 
 Use this skill for real-TV debloat work.
+
+## Select the OS first
+
+Confirm OS and model before selecting transport. For LG webOS, load
+`references/webos.md` and use `--platform webos`; the Android preflight/workflow
+below does not apply. Native webOS is currently read-only, with no validated
+firmware write contracts. Never substitute ADB or Android profiles for webOS.
 
 ## Core decision
 
@@ -19,6 +26,7 @@ After preflight/probe, determine whether a suitable profile already exists.
 ## Load only when needed
 
 - Real TV workflow → `RUNBOOK.md`
+- LG webOS / launcher planning → `references/webos.md`
 - Existing profile maintenance → `references/profile-maintenance.md`
 - New profile authoring → `references/profile-authoring.md`
 - Package classification → `references/package-classification.md`
@@ -32,6 +40,8 @@ Do not preload all references.
 Behave like a careful human operator: gather live evidence first, ask the operator to perform physical checks when software cannot prove behavior, record those observations, and only then change profile decisions.
 
 ## Mandatory preflight
+
+For Android/Google TV (webOS uses its separate preflight):
 
 ```bash
 tvdebloat --host <TV-IP> preflight [profile]
