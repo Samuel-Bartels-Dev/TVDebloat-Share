@@ -24,6 +24,7 @@ class Match:
 class Profile:
     path: Path
     name: str
+    status: str
     match: Match
     disable: tuple[str, ...]
     keep: tuple[str, ...]
@@ -58,6 +59,7 @@ def load(path: str | Path) -> Profile:
     return Profile(
         path=path,
         name=str(data.get("name") or path.parent.name),
+        status=str(data.get("status") or "candidate"),
         match=Match(
             manufacturer=str(device.get("manufacturer", "")),
             model=str(device.get("model", "")),
