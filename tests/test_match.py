@@ -6,13 +6,13 @@ from tvdebloat.profile import Match
 
 
 FACTS = DeviceFacts(
-    manufacturer="ASUS",
-    model="OfficeTV",
-    device="boardx",
-    board="boardx",
+    manufacturer="ExampleVendor",
+    model="Model-A",
+    device="device-a",
+    board="board-a",
     android="12",
     sdk="31",
-    fingerprint="asus/officetv/build",
+    fingerprint="example/model-a/build",
     home="com.vendor.home/.Main",
 )
 
@@ -20,13 +20,13 @@ FACTS = DeviceFacts(
 class MatchTests(unittest.TestCase):
     def test_exact(self):
         result = compare(Match(
-            manufacturer="ASUS", model="OfficeTV", device="boardx",
-            board="boardx", android="12", sdk="31"
+            manufacturer="ExampleVendor", model="Model-A", device="device-a",
+            board="board-a", android="12", sdk="31"
         ), FACTS)
         self.assertEqual(result.level, "exact")
 
     def test_mismatch(self):
-        result = compare(Match(manufacturer="ASUS", model="OtherTV"), FACTS)
+        result = compare(Match(manufacturer="ExampleVendor", model="OtherTV"), FACTS)
         self.assertEqual(result.level, "mismatch")
 
 
