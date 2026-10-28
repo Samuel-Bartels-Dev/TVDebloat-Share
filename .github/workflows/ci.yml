@@ -43,9 +43,8 @@ jobs:
           test ! -d launcher
           test ! -d addons
           test ! -d themes
-          test ! -d examples
           test ! -d tools
-          ! git grep -n -E 'Gathin23/cleanyourtv|cleanyour\.tv|com\.gathin\.' --             README.md RUNBOOK.md ARCHITECTURE.md docs tvdebloat tests profiles .agents .claude
+          ! git grep -n -E 'Gathin23/cleanyourtv|cleanyour\.tv|com\.gathin\.' --             README.md RUNBOOK.md ARCHITECTURE.md docs tvdebloat tests profiles examples .agents .claude
       - name: No private runtime material
         run: |
           ! find . -type f \( -name 'adbkey' -o -name 'adbkey.pub' -o -name '*.bak' \) -print -quit | grep -q .
