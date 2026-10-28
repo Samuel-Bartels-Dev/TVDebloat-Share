@@ -1,0 +1,16 @@
+[project]
+name = "tvdebloat"
+version = "0.1.0"
+description = "Clean-room Android TV and Google TV debloating toolkit"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.scripts]
+tvdebloat = "tvdebloat.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["tvdebloat"]
