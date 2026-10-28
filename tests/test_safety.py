@@ -31,6 +31,7 @@ class SafetyTests(unittest.TestCase):
             match=Match(),
             disable=tuple(disable),
             keep=(),
+            review=(),
             notes=(),
         )
 
