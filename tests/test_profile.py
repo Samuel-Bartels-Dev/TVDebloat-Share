@@ -7,12 +7,12 @@ from tvdebloat.profile import load, ProfileError
 
 class ProfileTests(unittest.TestCase):
     def test_loads_profile(self):
-        text = """name = "ASUS Office"
+        text = """name = "Example Profile"
 status = "candidate"
 
 [device]
-manufacturer = "ASUS"
-model = "X"
+manufacturer = "ExampleVendor"
+model = "Model-A"
 
 [packages]
 disable = ["com.vendor.ads"]
@@ -22,7 +22,7 @@ keep = ["com.vendor.input"]
             f.write(text)
             path = Path(f.name)
         p = load(path)
-        self.assertEqual(p.name, "ASUS Office")
+        self.assertEqual(p.name, "Example Profile")
         self.assertEqual(p.status, "candidate")
         self.assertEqual(p.disable, ("com.vendor.ads",))
 
