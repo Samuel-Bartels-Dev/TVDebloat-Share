@@ -1,3 +1,5 @@
+Read `evidence-gathering.md` whenever package behavior is uncertain or a decision depends on physical TV behavior.
+
 # Existing profile maintenance
 
 Use when a profile already exists for the TV.
