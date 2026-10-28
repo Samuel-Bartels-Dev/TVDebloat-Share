@@ -22,11 +22,14 @@ After preflight/probe, determine whether a suitable profile already exists.
 - Existing profile maintenance → `references/profile-maintenance.md`
 - New profile authoring → `references/profile-authoring.md`
 - Package classification → `references/package-classification.md`
+- Evidence gathering / physical confirmation → `references/evidence-gathering.md`
 - Pilot/fleet validation → `references/validation-and-fleet.md`
 - Failures → `references/bug-workflow.md`
 - Profile format → `docs/profiles.md`
 
 Do not preload all references.
+
+Behave like a careful human operator: gather live evidence first, ask the operator to perform physical checks when software cannot prove behavior, record those observations, and only then change profile decisions.
 
 ## Mandatory preflight
 
