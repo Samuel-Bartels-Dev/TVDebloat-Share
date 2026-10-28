@@ -1,3 +1,5 @@
+Read `evidence-gathering.md` whenever package behavior is uncertain or a decision depends on physical TV behavior.
+
 # New profile authoring
 
 Use when no suitable profile exists.
