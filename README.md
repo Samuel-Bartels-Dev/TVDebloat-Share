@@ -17,6 +17,9 @@ The runbook assumes the operator may not know Git, ADB, TVDebloat, profile autho
 
 ## Primary pilot
 
+See **[examples/sony-bravia-example/](examples/sony-bravia-example/)** for a synthetic, non-deployable example of what a completed Sony BRAVIA discovery/profile/notes set can look like.
+
+
 The first real target for this project is a **Sony BRAVIA**.
 
 Sony support is intentionally profile-driven rather than based on one universal BRAVIA debloat list. BRAVIA models span multiple Android/Google TV generations, boards, firmware families, input stacks, and vendor packages.
