@@ -1,0 +1,73 @@
+{
+  "device": {
+    "manufacturer": "Sony",
+    "model": "BRAVIA-EXAMPLE-NOT-REAL",
+    "device": "example-device",
+    "board": "example-board",
+    "android": "12",
+    "sdk": "31",
+    "fingerprint": "sony/example/build",
+    "home": "com.example.sony.home/.MainActivity"
+  },
+  "packages": [
+    {
+      "package": "com.example.sony.home",
+      "disabled": false,
+      "protected": false,
+      "hints": []
+    },
+    {
+      "package": "com.example.sony.inputservice",
+      "disabled": false,
+      "protected": false,
+      "hints": [
+        "input"
+      ]
+    },
+    {
+      "package": "com.example.sony.promotions",
+      "disabled": false,
+      "protected": false,
+      "hints": [
+        "recommendations"
+      ]
+    },
+    {
+      "package": "com.example.sony.recommendations",
+      "disabled": false,
+      "protected": false,
+      "hints": [
+        "recommendations"
+      ]
+    },
+    {
+      "package": "com.example.sony.remoteservice",
+      "disabled": false,
+      "protected": false,
+      "hints": [
+        "remote"
+      ]
+    },
+    {
+      "package": "com.example.sony.telemetry",
+      "disabled": false,
+      "protected": false,
+      "hints": [
+        "telemetry"
+      ]
+    },
+    {
+      "package": "com.example.sony.voicefeature",
+      "disabled": false,
+      "protected": false,
+      "hints": [
+        "voice"
+      ]
+    }
+  ],
+  "guidance": {
+    "disable_candidates": "Review packages with telemetry/recommendations hints; do not auto-disable.",
+    "keep_candidates": "Treat protected/input/remote/setup packages as keep/review unless device evidence says otherwise.",
+    "unknown": "Unknown packages require investigation before classification."
+  }
+}
