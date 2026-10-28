@@ -29,6 +29,22 @@ and if not build a candidate debloat profile with me.
 Do not apply anything until I approve the package diff.
 ```
 
+Example profile-maintenance prompt:
+
+```text
+Use the tvdebloat skill.
+
+Compare the live TV at 192.168.1.50 against:
+profiles/sony/<model>/profile.toml
+
+Show me a proposed diff for:
+- packages to add to disable,
+- packages to remove from disable or move to keep,
+- packages that should stay in review.
+
+Explain every proposed change and do not edit the profile until I approve the diff.
+```
+
 Example Claude Code command:
 
 ```text
