@@ -111,11 +111,3 @@ TVDebloat/
 ├── ARCHITECTURE.md
 └── pyproject.toml
 ```
-
-## Reference policy
-
-The upstream implementations are references for **behavior and evidence**, not runtime dependencies.
-
-TVDebloat should not tell an operator to follow another project's PR, issue, script, or website in order to complete a normal workflow. Device findings that matter operationally should be rewritten into TVDebloat profiles, tests, or local documentation.
-
-Required license/provenance notices remain in [LICENSE](LICENSE) and [NOTICE.md](NOTICE.md).
