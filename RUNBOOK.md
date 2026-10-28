@@ -15,6 +15,12 @@ It assumes you may not know:
 
 Follow the sections in order.
 
+**Identify the OS first.** The commands below describe Android/Google TV. For an
+LG webOS TV, use [the independent webOS workflow](docs/webos.md): existing trusted
+SSH access, native read-only preflight, discovery and launcher planning. Do not
+enable ADB or apply Android package profiles to webOS. Native webOS writes remain
+blocked until an exact firmware contract is validated.
+
 The primary pilot for this project is a **Sony BRAVIA**, but the workflow is generic and can be reused for other Android TV / Google TV devices.
 
 ---
