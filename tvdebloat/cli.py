@@ -48,50 +48,70 @@ def build_parser() -> argparse.ArgumentParser:
 
 def main(argv=None) -> int:
     args = build_parser().parse_args(argv)
-    if not args.host:
-        print("error: --host or TV_HOST is required", file=sys.stderr)
-        return 2
+    local_commands = {"profile-init", "profile-promote"}
+
     try:
-        client = Client(Target(args.host, args.port), args.adb)
-        client.connect()
-        if args.command == "probe":
-            result = read_facts(client).as_dict()
-        elif args.command == "audit":
-            result = inventory(client)
-        elif args.command == "privacy":
-            result = privacy_audit(client)
-        elif args.command == "discover":
-            data = discover(client)
-            out = write_discovery(data, args.out)
-            result = {"discovery": str(out), "packages": len(data["packages"])}
-        elif args.command == "profile-init":
+        if args.command == "profile-init":
             path = init_profile(args.from_file, args.vendor, args.model, args.name)
             result = {"profile": str(path), "status": "candidate"}
         elif args.command == "profile-promote":
             path = promote_profile(args.profile)
             result = {"profile": str(path), "status": "validated"}
-        elif args.command == "preflight":
-            result = run_preflight(client, args.profile)
-        elif args.command == "preview":
-            result = preview(client, args.profile)
-        elif args.command == "provision":
-            result = provision(client, args.profile, args.apply)
-        elif args.command == "restore":
-            result = restore(client, args.profile)
-        elif args.command == "verify":
-            result = verify(client)
-        elif args.command == "drift":
-            result = inspect_drift(client, args.profile)
         else:
-            try:
-                device = read_facts(client).as_dict()
-            except Exception:
-                device = {}
-            jp, mp = write_bug(args.title, args.operation, args.error, args.expected, args.actual, device)
-            result = {"json": str(jp), "markdown": str(mp)}
+            if not args.host:
+                if args.command == "bug-report":
+                    jp, mp = write_bug(
+                        args.title, args.operation, args.error,
+                        args.expected, args.actual, {}
+                    )
+                    result = {"json": str(jp), "markdown": str(mp)}
+                    print(json.dumps(result, indent=2, sort_keys=True))
+                    return 0
+                if args.command == "preflight":
+                    result = run_preflight(None, args.profile)
+                    print(json.dumps(result, indent=2, sort_keys=True))
+                    return 0
+                print("error: --host or TV_HOST is required", file=sys.stderr)
+                return 2
+
+            client = Client(Target(args.host, args.port), args.adb)
+            client.connect()
+            if args.command == "probe":
+                result = read_facts(client).as_dict()
+            elif args.command == "audit":
+                result = inventory(client)
+            elif args.command == "privacy":
+                result = privacy_audit(client)
+            elif args.command == "discover":
+                data = discover(client)
+                out = write_discovery(data, args.out)
+                result = {"discovery": str(out), "packages": len(data["packages"])}
+            elif args.command == "preflight":
+                result = run_preflight(client, args.profile)
+            elif args.command == "preview":
+                result = preview(client, args.profile)
+            elif args.command == "provision":
+                result = provision(client, args.profile, args.apply)
+            elif args.command == "restore":
+                result = restore(client, args.profile)
+            elif args.command == "verify":
+                result = verify(client)
+            elif args.command == "drift":
+                result = inspect_drift(client, args.profile)
+            else:
+                try:
+                    device = read_facts(client).as_dict()
+                except Exception:
+                    device = {}
+                jp, mp = write_bug(
+                    args.title, args.operation, args.error,
+                    args.expected, args.actual, device
+                )
+                result = {"json": str(jp), "markdown": str(mp)}
     except (AdbError, ProfileError, SafetyError, ApplyError, FileNotFoundError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
+
     print(json.dumps(result, indent=2, sort_keys=True))
     return 0
 
