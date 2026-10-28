@@ -1,0 +1,40 @@
+# EXAMPLE ONLY — NOT A REAL OR VALIDATED SONY PROFILE.
+# Real values must come from the live BRAVIA probe/discovery workflow.
+
+name = "Sony BRAVIA Example Office Profile"
+status = "candidate"
+
+[device]
+manufacturer = "Sony"
+model = "BRAVIA-EXAMPLE-NOT-REAL"
+device = "example-device"
+board = "example-board"
+android = "12"
+sdk = "31"
+fingerprint_contains = "sony/example"
+
+[packages]
+
+# Only packages proven safe on the pilot belong here.
+disable = [
+  "com.example.sony.promotions",
+]
+
+# Required/protected packages belong here.
+keep = [
+  "com.example.sony.inputservice",
+  "com.example.sony.remoteservice",
+]
+
+# Interesting packages that still need evidence or physical testing.
+review = [
+  "com.example.sony.recommendations",
+  "com.example.sony.telemetry",
+  "com.example.sony.voicefeature",
+]
+
+notes = [
+  "EXAMPLE ONLY — all package names in this profile are synthetic.",
+  "Built from a hypothetical first Sony BRAVIA discovery run.",
+  "Pilot validation and reboot/drift testing are required before validation.",
+]
