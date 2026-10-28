@@ -18,6 +18,6 @@ def run(client: Client, profile_path: str | Path, apply_changes: bool = False) -
         result["next_step"] = "Review the preview and rerun with --apply only after approval."
         return result
 
-    result["apply"] = apply(client, profile_path)
+    result["apply"] = apply(client, profile_path, allow_candidate=True)
     result["verify"] = verify(client)
     return result
