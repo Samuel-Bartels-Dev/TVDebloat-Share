@@ -13,7 +13,7 @@ def slug(value: str) -> str:
     return value.strip("-") or "unknown"
 
 
-def render_profile(name: str, status: str, device: dict, disable: list[str], keep: list[str], notes: list[str]) -> str:
+def render_profile(name: str, status: str, device: dict, disable: list[str], keep: list[str], review: list[str], notes: list[str]) -> str:
     lines = [
         f'name = {json.dumps(name)}',
         f'status = {json.dumps(status)}',
@@ -28,6 +28,8 @@ def render_profile(name: str, status: str, device: dict, disable: list[str], kee
     lines += [f"  {json.dumps(x)}," for x in disable]
     lines += ["]", "", "keep = ["]
     lines += [f"  {json.dumps(x)}," for x in keep]
+    lines += ["]", "", "review = ["]
+    lines += [f"  {json.dumps(x)}," for x in review]
     lines += ["]", "", "notes = ["]
     lines += [f"  {json.dumps(x)}," for x in notes]
     lines += ["]", ""]
@@ -43,6 +45,12 @@ def initialize(discovery_path: str | Path, vendor: str, model: str, name: str, r
         for p in data.get("packages", [])
         if p.get("protected") or any(h in {"input", "remote", "setup"} for h in p.get("hints", []))
     })
+    review = sorted({
+        p["package"]
+        for p in data.get("packages", [])
+        if not p.get("protected")
+        and any(h in {"telemetry", "recommendations", "voice"} for h in p.get("hints", []))
+    } - set(keep))
     notes = [
         "Generated from live discovery. Candidate only.",
         "Review every package before adding it to disable.",
@@ -56,7 +64,7 @@ def initialize(discovery_path: str | Path, vendor: str, model: str, name: str, r
         raise FileExistsError(f"profile already exists: {profile_path}")
 
     profile_path.write_text(
-        render_profile(name, "candidate", device, [], keep, notes),
+        render_profile(name, "candidate", device, [], keep, review, notes),
         encoding="utf-8",
     )
     notes_path = folder / "NOTES.md"
