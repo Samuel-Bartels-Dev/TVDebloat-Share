@@ -11,13 +11,13 @@ class AuthorTests(unittest.TestCase):
     def test_init_and_promote(self):
         discovery = {
             "device": {
-                "manufacturer": "ASUS",
-                "model": "OfficeTV",
-                "device": "x",
-                "board": "x",
+                "manufacturer": "ExampleVendor",
+                "model": "Model-A",
+                "device": "device-a",
+                "board": "board-a",
                 "android": "12",
                 "sdk": "31",
-                "fingerprint": "asus/build",
+                "fingerprint": "example/model-a/build",
             },
             "packages": [
                 {"package": "com.android.settings", "protected": True, "hints": []},
@@ -27,7 +27,7 @@ class AuthorTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             source = Path(d) / "discovery.json"
             source.write_text(json.dumps(discovery), encoding="utf-8")
-            path = initialize(source, "asus", "OfficeTV", "ASUS Office", root=Path(d) / "profiles")
+            path = initialize(source, "examplevendor", "Model-A", "Example Model A", root=Path(d) / "profiles")
             profile = load(path)
             self.assertEqual(profile.status, "candidate")
             self.assertIn("com.android.settings", profile.keep)
