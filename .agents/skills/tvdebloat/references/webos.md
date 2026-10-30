@@ -2,11 +2,12 @@
 
 Read `docs/webos.md` from the repository root for the CLI/schema and provenance.
 For OLED65C9PUA / 03.50.31 / webOS 4.5.0, also read
-`docs/lg-c9-hearth-observations.md`: it records actual operator observations,
-the tested Home-ribbon helper behavior, photo screensaver, font and Home-only
-notes integration. It separates operator-confirmed behavior from unverified
-checks. Do not generalize these rooted-TV observations to other firmware;
-native TVDebloat writes remain unsupported.
+`docs/lg-c9-hearth-observations.md`: use its task-specific procedures for
+wallpaper, ribbon behavior, screensaver, font, tiles and Home-only integrations.
+It records reusable mechanics, tested scope and limitations, not a prior user's
+configuration. Correct outdated guidance in place using
+`docs/knowledge-maintenance.md`. Do not generalize these rooted-TV findings to
+other firmware; native TVDebloat writes remain unsupported.
 
 Identify the physical TV's OS before transport selection. If it is webOS, never
 use ADB, Android `pm`, Android profiles, or the Android provisioning engine.

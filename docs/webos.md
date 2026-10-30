@@ -142,7 +142,8 @@ Independent implementation, not a port of its server or dashboard:
 
 Subsequent live observations for OLED65C9PUA / 03.50.31 / webOS 4.5.0 are
 recorded in [LG C9 / Hearth observations](lg-c9-hearth-observations.md), including
-operator-confirmed standalone Hearth use and a pending Home-helper workaround.
+task-specific wallpaper, Home/ribbon and other customization procedures,
+with their tested scope and remaining limitations.
 These do not validate other firmware or add native write capability.
 Do not run Android commands on it or infer another TV is rooted.
 Do not copy newer-webOS Glasshouse Home takeover onto it. A separate custom

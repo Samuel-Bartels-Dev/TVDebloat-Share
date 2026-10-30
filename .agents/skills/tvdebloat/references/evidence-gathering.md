@@ -111,3 +111,11 @@ Use these decision levels:
 - **review** — insufficient evidence, uncertain behavior, or no pilot result yet
 
 When uncertain, choose review.
+
+## Shared reference upkeep
+
+Keep results as reusable technical findings, not personal setup history.
+Use `docs/knowledge-maintenance.md` from the repository root. Replace disproven
+instructions in the current task section; keep a concise failure/resolution and
+its version scope. Private bindings, content and recovery evidence stay outside
+the shared repository.

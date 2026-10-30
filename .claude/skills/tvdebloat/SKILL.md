@@ -34,8 +34,13 @@ After preflight/probe, determine whether a suitable profile already exists.
 - Pilot/fleet validation → `references/validation-and-fleet.md`
 - Failures → `references/bug-workflow.md`
 - Profile format → `docs/profiles.md`
+- Reusable findings / privacy / correcting stale guidance → `docs/knowledge-maintenance.md` (repository root)
 
 Do not preload all references.
+
+After work, retain reusable procedures and scoped evidence, not personal setup
+history. Correct the existing reference when a failure disproves it; do not
+append contradictory updates. Follow the reference-maintenance guide above.
 
 Behave like a careful human operator: gather live evidence first, ask the operator to perform physical checks when software cannot prove behavior, record those observations, and only then change profile decisions.
 
