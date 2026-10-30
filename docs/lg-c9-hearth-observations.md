@@ -1,5 +1,33 @@
 # LG C9 / Hearth operator observations
 
+## Read-only Grafana image viewer — October 30, 2026
+
+On this C9 firmware, the native browser could not parse JavaScript used by
+Grafana 13.2.4. A separate ES5 webOS app was installed instead: an authenticated
+Windows renderer captures the actual dashboards and publishes bounded PNG pages
+over existing pinned SSH. The TV stores images and timestamps, with no Grafana
+token or sign-in. This is a separately approved rooted-TV customization, not a
+native TVDebloat write capability.
+
+Four dashboards rendered real metric queries and produced nine pages. Native
+TV checks verified all four tabs loaded full-size images, page-down selected
+the next page, and Back returned to Hearth. A stale indicator appeared for an
+old capture; scheduled publication then refreshed the TV cache. The PC services
+bind only to loopback and use a dedicated Viewer identity. All 95 pre-existing
+app IDs remained installed; Hearth entrypoint and Home-helper hashes were
+unchanged. Only one app tile was added to Hearth configuration, backed up before
+the merge. Physical readability/remote acceptance and new reboot/sign-in
+persistence checks remain pending; no reboot occurred for this change.
+
+Two transport findings matter for reproducing this approach. A forced SSH
+helper must not half-close the upstream HTTP socket before Grafana completes
+authentication: this caused a misleading Unauthorized response with a canceled
+request context. Also, this TV's Luna CLI can exit silently when stdin is already
+closed. Hold stdin open for a bounded request and require an actual response
+before deciding an app is absent or retrying an installation. Grafana's modern
+dashboard DTO reads must be allowlisted for the observed version and exact
+dashboard IDs; unknown writes should stay denied.
+
 
 ## Home-only family notes installed — October 30, 2026
 
