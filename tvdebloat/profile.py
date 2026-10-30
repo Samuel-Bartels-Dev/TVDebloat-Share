@@ -56,6 +56,8 @@ def load(path: str | Path) -> Profile:
         raise ProfileError(f"cannot parse profile {path}: {exc}") from exc
 
     device = data.get("device", {})
+    if data.get("platform", "android") != "android":
+        raise ProfileError("profile platform is not Android; select --platform webos")
     packages = data.get("packages", {})
     return Profile(
         path=path,

@@ -4,6 +4,8 @@ import argparse
 import json
 import os
 import sys
+from pathlib import Path
+import tomllib
 
 from .adb import AdbError, Client, Target
 from .audit import inventory
@@ -22,10 +24,18 @@ from .verify import run as verify
 
 
 def build_parser() -> argparse.ArgumentParser:
-    p = argparse.ArgumentParser(prog="tvdebloat", description="Safe Android TV / Google TV debloating")
+    p = argparse.ArgumentParser(prog="tvdebloat", description="Android/Google TV debloating and independent webOS discovery/planning")
     p.add_argument("--host", default=os.environ.get("TV_HOST"))
     p.add_argument("--port", type=int, default=int(os.environ.get("TV_PORT", "5555")))
     p.add_argument("--adb", default=os.environ.get("ADB"))
+    p.add_argument("--platform", choices=("android", "webos"), default="android")
+    p.add_argument("--ssh-port", type=int, default=22)
+    p.add_argument("--ssh-user", default="root")
+    p.add_argument("--ssh-key")
+    p.add_argument("--plan", help="webOS: save preview here, or read this exact plan for --apply")
+    p.add_argument("--approve-plan", help="webOS: digest of the exact operator-approved plan")
+    p.add_argument("--pilot", action="store_true", help="webOS: acknowledge candidate pilot")
+    p.add_argument("--state-dir", help="webOS: explicit private local recovery directory")
     sub = p.add_subparsers(dest="command", required=True)
 
     sub.add_parser("probe")
@@ -37,7 +47,7 @@ def build_parser() -> argparse.ArgumentParser:
     pre = sub.add_parser("preflight"); pre.add_argument("profile", nargs="?")
     pv = sub.add_parser("preview"); pv.add_argument("profile")
     pr = sub.add_parser("provision"); pr.add_argument("profile"); pr.add_argument("--apply", action="store_true")
-    rs = sub.add_parser("restore"); rs.add_argument("profile")
+    rs = sub.add_parser("restore"); rs.add_argument("profile"); rs.add_argument("--apply", action="store_true")
     vf = sub.add_parser("verify")
     dr = sub.add_parser("drift"); dr.add_argument("profile")
     br = sub.add_parser("bug-report")
@@ -51,6 +61,21 @@ def main(argv=None) -> int:
     local_commands = {"profile-init", "profile-promote"}
 
     try:
+        if getattr(args, "profile", None) and not (args.platform == "webos" and args.command == "restore"):
+            declared = tomllib.loads(Path(args.profile).read_text(encoding="utf-8")).get("platform", "android")
+            if declared != args.platform:
+                raise ProfileError("profile platform does not match selected --platform")
+        if args.command == "profile-init":
+            source = json.loads(Path(args.from_file).read_text(encoding="utf-8"))
+            if not isinstance(source, dict):
+                raise ProfileError("discovery must be a platform-tagged object")
+            if source.get("platform", "android") != args.platform:
+                raise ProfileError("discovery platform does not match selected --platform")
+        if args.platform == "webos":
+            from .webos_cli import run as run_webos
+            result = run_webos(args)
+            print(json.dumps(result, indent=2, sort_keys=True))
+            return 1 if args.command == "preflight" and not result["ready"] else 0
         if args.command == "profile-init":
             path = init_profile(args.from_file, args.vendor, args.model, args.name)
             result = {"profile": str(path), "status": "candidate"}
@@ -108,7 +133,15 @@ def main(argv=None) -> int:
                     args.expected, args.actual, device
                 )
                 result = {"json": str(jp), "markdown": str(mp)}
-    except (AdbError, ProfileError, SafetyError, ApplyError, FileNotFoundError, ValueError) as exc:
+    except OSError as exc:
+        if args.platform == "webos":
+            print("error: local webOS artifact could not be read or written; check permissions and existing files", file=sys.stderr)
+            return 1
+        if isinstance(exc, FileNotFoundError):
+            print(f"error: {exc}", file=sys.stderr)
+            return 1
+        raise
+    except (AdbError, ProfileError, SafetyError, ApplyError, ValueError) as exc:
         print(f"error: {exc}", file=sys.stderr)
         return 1
 
