@@ -175,6 +175,34 @@ Verify actual Settings hides the card and returning Home reveals it. This
 Home-only behavior was verified by DOM checks; do not infer global overlays or
 reboot persistence from those checks.
 
+## Home calendar feeds
+
+A read-only Home card can fetch a private iCalendar feed directly on the TV,
+without a PC relay. Keep the secret URL in a root-owned mode-0600 curl config
+inside a mode-0700 directory, accessed by a bounded reader through the existing
+Homebrew exec service. Use verified HTTPS and bounded size/time. Keep the full
+feed in memory only; cache just the current display window's titles, times,
+all-day flags and successful-refresh timestamp. Never publish calendar IDs,
+private links, event contents or a user's layout in the shared reference.
+
+Use a reviewed iCalendar library for recurrence, moved/canceled exceptions,
+exclusive all-day end dates, multi-day overlap and DST. ICAL.js 2.2.1's ES5
+browser build compiled on Chromium 53 but failed during initialization because
+Object.entries/fromEntries were missing. Narrow compatible shims resolved it;
+verify execution and parsing, not syntax alone. Validate raw TZID parameters
+against registered zones before materializing dates: the library can otherwise
+silently convert an unknown zone into floating/device-local time.
+
+The inspected TV shell produced an invalid numeric result with a shell-variable
+length expression on the feed. Measuring bytes through printf and wc -c worked.
+Keep private feed data out of error logs. A failed parse/fetch must preserve the
+last-good display and mark it stale, rather than become a fresh empty calendar.
+Measure the live clock, Notes and app-row rectangles before placing the card.
+Bound visible rows and explicitly count additional events. Test actual Settings
+hiding and Home return, including OLED shifting. Native-browser initialization,
+recurrence fixtures, HTTPS refresh, empty-feed cross-check and Home/Settings
+visibility were verified; overnight rollover and reboot remain separate checks.
+
 ## Read-only dashboard images
 
 The native browser could not parse JavaScript used by Grafana 13.2.4. A tested
